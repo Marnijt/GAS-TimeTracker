@@ -20,10 +20,10 @@ function uiStartWork() {
   SpreadsheetApp.getActiveSpreadsheet().show(app);
 }
 
-function onOpen() {   
+function onOpen() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var menuEntries = [{name: "Reload from calendar", functionName: "importEvents"},
                      {name: "Still on work", functionName: "stillWork"},
                      {name: "Arrived at work...", functionName: "uiStartWork"}];
-  ss.addMenu("TimeTracker", menuEntries);  
+  ss.addMenu("TimeTracker", menuEntries);
 }
