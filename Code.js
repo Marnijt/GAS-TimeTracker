@@ -1,18 +1,17 @@
-calendar_name = 'TimeTrackingMcNeel';
-sheetName = calendar_name+'2018';
-work_hours = '20:00:00';
+work_hours = '36:00:00';
 start_year = 2018;
 start_month = 1;
-usual_day_start_h = 9;
+usual_day_start_h = 09;
 usual_day_start_m = 0;
-usual_day_end_h = 14;
-usual_day_end_m = 30;
-
+usual_day_end_h = 17;
+usual_day_end_m = 00;
+calendar_name = 'TimeTracking';
+sheetName = calendar_name+start_year;
+psheetName = 'Details'
 
 /* Set finish time of todays work day to the current time */
 function stillWork() {
   var Calendar = CalendarApp.getCalendarsByName(calendar_name);
-  //var sheetName = calendar_name+'2018';
 
   todayStart = new Date();
   todayStart.setHours(0);
@@ -22,7 +21,7 @@ function stillWork() {
   todayEnd.setMinutes(59);
   var events = Calendar[0].getEvents(todayStart , todayEnd);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  //var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Plans");
+  var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(psheetName);
 
   if (events[0]) {
     event = events[events.length-1];
@@ -40,7 +39,6 @@ function stillWork() {
 /* Set time when you arrived at work */
 function setStartWork(e) {
   var Calendar = CalendarApp.getCalendarsByName(calendar_name);
-  //var sheetName = calendar_name+'2018';
 
   todayStart = new Date();
   todayStart.setHours(0);
@@ -50,7 +48,7 @@ function setStartWork(e) {
   todayEnd.setMinutes(59);
   var events = Calendar[0].getEvents(todayStart , todayEnd);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  //var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Plans");
+  var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(psheetName);
 
   if (events[0]) {
     event = events[events.length-1];
@@ -162,21 +160,20 @@ function importEvents() {
   endDate.setDate(40);
 
   var Calendar = CalendarApp.getCalendarsByName(calendar_name);
-  //var sheetName = calendar_name+'2018';
 
   var events = Calendar[0].getEvents(startDate , endDate);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  //var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Plans");
+  var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(psheetName);
 
   if (events[0]) {
     sheet.clear();
 
     fillWorkHoursCells(sheet);
-    //fillWorkHoursCells(psheet);
+    fillWorkHoursCells(psheet);
 
     var eventarray = new Array();
     generateHeader(sheet);
-    //generateHeader(psheet);
+    generateHeader(psheet);
 
     var i = 0;
     var w = getWeekNumber(events[0].getStartTime());
@@ -222,7 +219,7 @@ function importEvents() {
         dayNum++;
       }
 
-      //fillLine(events[i].getStartTime(), events[i].getEndTime(), events[i].getTitle(), events[i].getDescription(), lineN, psheet);
+      fillLine(events[i].getStartTime(), events[i].getEndTime(), events[i].getTitle(), events[i].getDescription(), lineN, psheet);
       lineN++;
 
     }
@@ -238,11 +235,11 @@ function importEvents() {
       day_end = new Date(day_date);
       day_end.setHours(usual_day_end_h);
       day_end.setMinutes(usual_day_end_m);
-      //fillLine(day_start, day_end, "", "",lineN, psheet);
+      fillLine(day_start, day_end, "", "",lineN, psheet);
       day_date.setDate(day_date.getDate() + 1);
       lineN++;
     }
-    //addSumLine(2, psheet);
+    addSumLine(2, psheet);
   } else {
     Browser.msgBox('nothing between ' + startDate + ' till ' + endDate);
   }
