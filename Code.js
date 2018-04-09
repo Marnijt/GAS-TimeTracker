@@ -7,7 +7,6 @@ usual_day_end_h = 17;
 usual_day_end_m = 00;
 calendar_name = 'TimeTracking';
 sheetName = calendar_name+start_year;
-psheetName = 'Details'
 
 /* Set finish time of todays work day to the current time */
 function stillWork() {
@@ -20,8 +19,6 @@ function stillWork() {
   todayEnd.setHours(23);
   todayEnd.setMinutes(59);
   var events = Calendar[0].getEvents(todayStart , todayEnd);
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(psheetName);
 
   if (events[0]) {
     event = events[events.length-1];
@@ -47,8 +44,6 @@ function setStartWork(e) {
   todayEnd.setHours(23);
   todayEnd.setMinutes(59);
   var events = Calendar[0].getEvents(todayStart , todayEnd);
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(psheetName);
 
   if (events[0]) {
     event = events[events.length-1];
@@ -99,7 +94,7 @@ function importEvents() {
 
   function addEOWRemaining(week, sheet) {
     sheet.getRange(lineN-2, 8).setFormula("=E"+(lineN-3));
-    sheet.getRange(lineN-1, 8).setFormula("=SUM("+getWorkHoursCell()+",H"+(lineN-2)+")");
+    sheet.getRange(lineN-1, 8).setFormula("=SUM("+getWorkHoursCell()+";H"+(lineN-2)+")");
     sheet.getRange(lineN-1,8).setNumberFormat('[h]:mm');
     runningWorkHours = sheet.getRange(lineN-1, 8);
     runningHoursCell = "H"+(lineN-1);
@@ -163,17 +158,14 @@ function importEvents() {
 
   var events = Calendar[0].getEvents(startDate , endDate);
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  var psheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(psheetName);
 
   if (events[0]) {
     sheet.clear();
 
     fillWorkHoursCells(sheet);
-    fillWorkHoursCells(psheet);
 
     var eventarray = new Array();
     generateHeader(sheet);
-    generateHeader(psheet);
 
     var i = 0;
     var w = getWeekNumber(events[0].getStartTime());
@@ -201,7 +193,6 @@ function importEvents() {
         m = events[i].getStartTime().getMonth();
       }
 
-
       fillLine(events[i].getStartTime(), events[i].getEndTime(), events[i].getTitle(), events[i].getDescription(), lineN, sheet);
       lineN++;
 
@@ -219,7 +210,6 @@ function importEvents() {
         dayNum++;
       }
 
-      fillLine(events[i].getStartTime(), events[i].getEndTime(), events[i].getTitle(), events[i].getDescription(), lineN, psheet);
       lineN++;
 
     }
@@ -235,11 +225,9 @@ function importEvents() {
       day_end = new Date(day_date);
       day_end.setHours(usual_day_end_h);
       day_end.setMinutes(usual_day_end_m);
-      fillLine(day_start, day_end, "", "",lineN, psheet);
       day_date.setDate(day_date.getDate() + 1);
       lineN++;
     }
-    addSumLine(2, psheet);
   } else {
     Browser.msgBox('nothing between ' + startDate + ' till ' + endDate);
   }
